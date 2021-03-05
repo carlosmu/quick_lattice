@@ -12,6 +12,7 @@ This will save you a few clicks and other settings. No more. <br>
 7. Enjoy it!
 
 ## To-Do List
-- Only work well when origin is centered on geometry. Solve it!
+- Only work well when origin is centered on geometry = DONE!
+- Fix Rotation Issues = DONE!
 - Add some options to "last action" panel (for example: number of points)
 - Add feature to set bones/empties to all points of lattice.
