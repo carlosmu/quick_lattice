@@ -17,7 +17,7 @@ bl_info = {
     "name" : "Quick Lattice",
     "author" : "carlosmu <carlos.damian.munoz@gmail.com>",    
     "blender" : (2, 83, 0),
-    "version" : (0, 2, 0),
+    "version" : (0, 3, 0),
     "category" : "User",
     "location" : "3D View > Object Right Click Context Menu",
     "description" : "Automate the process of modifying an object from a lattice cage.",
@@ -28,7 +28,7 @@ bl_info = {
 
 # Operator class
 class QL_OT_quick_lattice(bpy.types.Operator):
-    """Quick lattice"""
+    """Automates the process of warping an object in a lattice cage"""
     bl_idname = "ops.quick_lattice"
     bl_label = "Quick Lattice"  
     
@@ -39,77 +39,53 @@ class QL_OT_quick_lattice(bpy.types.Operator):
             return True
     
     # Quick Lattice functionality
-    def execute(self, context):
-        # Save dimension of active object
-        dim = bpy.context.active_object.dimensions
-
-        # Save target object
+    def execute(self, context): 
+        # Save Target, Name, Dimensions, Origin Location.
         target = bpy.context.active_object
-
-        # Save target name
-        target_name = bpy.context.active_object.name
-
-        # Save origin location of active object
-        origin_loc = bpy.context.active_object.location
-
-        # Save rotation of active on cursor
-        cursor_rot = bpy.context.active_object.rotation_euler
-        bpy.context.scene.cursor.rotation_euler = cursor_rot
-
-        # Apply rotation for better bounding box
-        bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
-
-        # Set 3d cursor location to origin of active object
-        bpy.context.scene.cursor.location = origin_loc
+        target_nam = bpy.context.active_object.name
+        target_dim = bpy.context.active_object.dimensions
+        target_rot = bpy.context.active_object.rotation_euler
+        target_loc = bpy.context.active_object.location
+        # Save Location on 3d Cursor.
+        bpy.context.scene.cursor.location = bpy.context.active_object.location
 
         # Set origin to geometry
-        bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME', center='MEDIAN')
+        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
 
-        # Create a latticetice with the information previously collected. 
-        bpy.ops.object.add(type='LATTICE', enter_editmode=False, align='WORLD', location=bpy.context.active_object.location, rotation=target.rotation_euler)
+        # Create Lattice object with the information previously collected. 
+        bpy.ops.object.add(type='LATTICE', enter_editmode=False, align='WORLD', location=target_loc, rotation=target_rot)
 
         # Save reference and name of lattice (current active object).
         lattice = bpy.context.active_object
         lattice_name = bpy.context.active_object.name
 
         # Adjust dimensions of lattice and set subdivisions.
-        lattice.dimensions = dim
+        lattice.dimensions = target_dim
         data = bpy.context.object.data
         data.points_u = 3
         data.points_v = 3
         data.points_w = 3
 
-        ## Set origin to cursor
+        # Return Origin to Initial Position
         bpy.ops.object.select_all(action='DESELECT')
-        bpy.context.view_layer.objects.active = bpy.data.objects[target_name]
+        bpy.context.view_layer.objects.active = bpy.data.objects[target_nam]
         bpy.context.view_layer.objects.active.select_set(True)
-        bpy.ops.object.origin_set(type='ORIGIN_CURSOR', center='MEDIAN') 
-
-        # Inverted Rotation
-        rotation_inverted = bpy.context.scene.cursor.rotation_euler.to_quaternion().inverted()
-        bpy.context.active_object.rotation_euler = rotation_inverted.to_euler()
-        # Apply rotation
-        bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
-        # Rotation from cursor
-        bpy.context.active_object.rotation_euler = bpy.context.scene.cursor.rotation_euler
-
-        # Deselect the monkey
+        bpy.ops.object.origin_set(type='ORIGIN_CURSOR', center='MEDIAN')
         bpy.ops.object.select_all(action='DESELECT')
 
         # Add lattice modifier to target.
-        bpy.context.view_layer.objects.active = bpy.data.objects[target_name]
+        bpy.context.view_layer.objects.active = bpy.data.objects[target_nam]
         bpy.ops.object.modifier_add(type='LATTICE')
 
         # Set lattice object in modifier as deformation cage.
-        object = bpy.context.object
+        ob = bpy.context.object
         data = bpy.data
-        object.modifiers["Lattice"].object = data.objects[lattice_name]
-        object.modifiers["Lattice"].name = "Quick Lattice"
+        ob.modifiers["Lattice"].object = data.objects[lattice_name]
+        ob.modifiers["Lattice"].name = "Quick Lattice"
 
         # Set lattice as active, then set in edit mode.
         bpy.context.view_layer.objects.active = data.objects[lattice_name]
-        bpy.ops.object.editmode_toggle()
-        
+        bpy.ops.object.editmode_toggle()        
         return{'FINISHED'}
 
 # Draw buttons
@@ -118,8 +94,7 @@ def draw_ql_menu(self, context):
     # Menu elements only on selected objects
     if context.selected_objects:
         layout.operator("ops.quick_lattice", icon='LATTICE_DATA')  # Create Quick Lattice       
-        layout.separator() # Separator
-    
+        layout.separator() # Separator    
 
 # Register/unregister the operator class and draw function
 def register():
