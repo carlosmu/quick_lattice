@@ -19,6 +19,10 @@ This will save you a few clicks and other settings. No more. <br>
 5. Activate the addon.
 7. Enjoy it!
 
+## Changelog
+0.3.0 First Release!
+0.3.1 Fix: Crash On Undo, reported by BluePortal77 
+
 ## Known Issues
 When the object's pivot is rotated (but not the whole object), the result may not be what you want. In those cases, try applying the rotation first (Ctrl + A).
 <br><br>

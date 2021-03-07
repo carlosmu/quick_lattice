@@ -17,7 +17,7 @@ bl_info = {
     "name" : "Quick Lattice",
     "author" : "carlosmu <carlos.damian.munoz@gmail.com>",    
     "blender" : (2, 83, 0),
-    "version" : (0, 3, 0),
+    "version" : (0, 3, 1),
     "category" : "User",
     "location" : "3D View > Object Right Click Context Menu",
     "description" : "Automate the process of modifying an object from a lattice cage.",
@@ -31,6 +31,7 @@ class QL_OT_quick_lattice(bpy.types.Operator):
     """Automates the process of warping an object in a lattice cage"""
     bl_idname = "ops.quick_lattice"
     bl_label = "Quick Lattice"  
+    bl_options = {'REGISTER', 'UNDO'}
     
     # It prevents the operator from appearing in unsupported editors.
     @classmethod
