@@ -23,6 +23,9 @@ This will save you a few clicks and other settings. No more. <br>
 0.3.0 First Release!
 0.3.1 Fix: Crash On Undo, reported by BluePortal77 
 
+## Donate
+You can support my work by buying this plugin on Gumroad https://gum.co/quicklattice
+
 ## Known Issues
 When the object's pivot is rotated (but not the whole object), the result may not be what you want. In those cases, try applying the rotation first (Ctrl + A).
 <br><br>
