@@ -17,7 +17,7 @@ bl_info = {
     "name" : "Quick Lattice",
     "author" : "carlosmu <carlos.damian.munoz@gmail.com>",    
     "blender" : (2, 83, 0),
-    "version" : (0, 3, 1),
+    "version" : (0, 4, 0),
     "category" : "User",
     "location" : "3D View > Object Right Click Context Menu",
     "description" : "Automate the process of modifying an object from a lattice cage.",
@@ -29,10 +29,43 @@ bl_info = {
 # Operator class
 class QL_OT_quick_lattice(bpy.types.Operator):
     """Automates the process of warping an object in a lattice cage"""
-    bl_idname = "ops.quick_lattice"
+    bl_idname = "ql.quick_lattice"
     bl_label = "Quick Lattice"  
     bl_options = {'REGISTER', 'UNDO'}
-    
+
+    # Resolution Properties
+    resolution_u : bpy.props.IntProperty(
+        name = "Resolution U",
+        description = "Points in U direction (can't changed when there are shape keys)",
+        default = 3,
+        min = 1, soft_min = 2, soft_max = 16,
+    )
+    resolution_v : bpy.props.IntProperty(
+        name = "V",
+        description = "Points in V direction (can't changed when there are shape keys)",
+        default = 3,
+        min = 1, soft_min = 2, soft_max = 16,
+    )
+    resolution_w : bpy.props.IntProperty(
+        name = "W",
+        description = "Points in W direction (can't changed when there are shape keys)",
+        default = 3,
+        min = 1, soft_min = 2, soft_max = 16,
+    )
+
+    # Interpolation Types
+    interpolation_types = (('KEY_LINEAR', 'Linear', ''),
+                            ('KEY_CARDINAL', 'Cardinal', ''),
+                            ('KEY_CATMULL_ROM', 'Catmull-Rom', ''),
+                            ('KEY_BSPLINE', 'BSpline', ''))
+
+    interpolation_types : bpy.props.EnumProperty(
+        name = "Interpolation",
+        description = "Interpolation Type between dimension points",
+        items = interpolation_types,
+        default = 'KEY_BSPLINE',
+    )
+ 
     # It prevents the operator from appearing in unsupported editors.
     @classmethod
     def poll(cls, context):
@@ -63,9 +96,13 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         # Adjust dimensions of lattice and set subdivisions.
         lattice.dimensions = target_dim
         data = bpy.context.object.data
-        data.points_u = 3
-        data.points_v = 3
-        data.points_w = 3
+        data.points_u = self.resolution_u
+        data.points_v = self.resolution_v
+        data.points_w = self.resolution_w
+
+        data.interpolation_type_u = self.interpolation_types
+        data.interpolation_type_v = self.interpolation_types
+        data.interpolation_type_w = self.interpolation_types
 
         # Return Origin to Initial Position
         bpy.ops.object.select_all(action='DESELECT')
@@ -90,18 +127,18 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         return{'FINISHED'}
 
 # Draw buttons
-def draw_ql_menu(self, context):
+def draw_quicklattice_menu(self, context):
     layout = self.layout 
     # Menu elements only on selected objects
     if context.selected_objects:
-        layout.operator("ops.quick_lattice", icon='LATTICE_DATA')  # Create Quick Lattice       
+        layout.operator("ql.quick_lattice", icon='LATTICE_DATA')  # Create Quick Lattice       
         layout.separator() # Separator    
 
 # Register/unregister the operator class and draw function
 def register():
     bpy.utils.register_class(QL_OT_quick_lattice)
-    bpy.types.VIEW3D_MT_object_context_menu.prepend(draw_ql_menu) 
+    bpy.types.VIEW3D_MT_object_context_menu.prepend(draw_quicklattice_menu) 
         
 def unregister():
     bpy.utils.unregister_class(QL_OT_quick_lattice)
-    bpy.types.VIEW3D_MT_object_context_menu.remove(draw_ql_menu) 
+    bpy.types.VIEW3D_MT_object_context_menu.remove(draw_quicklattice_menu) 
