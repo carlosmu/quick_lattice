@@ -23,7 +23,7 @@ This will save you a few clicks and other settings. No more. <br>
 - 0.3.0 First Release!
 - 0.3.1 Fix: Crash On Undo, reported by BluePortal77 
 - 0.4.0 Add Last Operation Support
-<br><img src="demo/last_operation.jpg" width="600"><br>
+<br><img src="demo/last_operation.jpg" width="350"><br>
 
 
 ## Donate
