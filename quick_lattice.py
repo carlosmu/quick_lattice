@@ -75,13 +75,12 @@ class QL_OT_quick_lattice(bpy.types.Operator):
     # Quick Lattice functionality
     def execute(self, context): 
         # Save Target, Name, Dimensions, Origin Location.
-        target = bpy.context.active_object
-        target_nam = bpy.context.active_object.name
-        target_dim = bpy.context.active_object.dimensions
-        target_rot = bpy.context.active_object.rotation_euler
-        target_loc = bpy.context.active_object.location
+        target_nam = context.active_object.name
+        target_dim = context.active_object.dimensions
+        target_rot = context.active_object.rotation_euler
+        target_loc = context.active_object.location
         # Save Location on 3d Cursor.
-        bpy.context.scene.cursor.location = bpy.context.active_object.location
+        context.scene.cursor.location = context.active_object.location
 
         # Set origin to geometry
         bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
@@ -90,12 +89,12 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         bpy.ops.object.add(type='LATTICE', enter_editmode=False, align='WORLD', location=target_loc, rotation=target_rot)
 
         # Save reference and name of lattice (current active object).
-        lattice = bpy.context.active_object
-        lattice_name = bpy.context.active_object.name
+        lattice = context.active_object
+        lattice_name = context.active_object.name
 
         # Adjust dimensions of lattice and set subdivisions.
         lattice.dimensions = target_dim
-        data = bpy.context.object.data
+        data = context.object.data
         data.points_u = self.resolution_u
         data.points_v = self.resolution_v
         data.points_w = self.resolution_w
@@ -106,23 +105,23 @@ class QL_OT_quick_lattice(bpy.types.Operator):
 
         # Return Origin to Initial Position
         bpy.ops.object.select_all(action='DESELECT')
-        bpy.context.view_layer.objects.active = bpy.data.objects[target_nam]
-        bpy.context.view_layer.objects.active.select_set(True)
+        context.view_layer.objects.active = bpy.data.objects[target_nam]
+        context.view_layer.objects.active.select_set(True)
         bpy.ops.object.origin_set(type='ORIGIN_CURSOR', center='MEDIAN')
         bpy.ops.object.select_all(action='DESELECT')
 
         # Add lattice modifier to target.
-        bpy.context.view_layer.objects.active = bpy.data.objects[target_nam]
+        context.view_layer.objects.active = bpy.data.objects[target_nam]
         bpy.ops.object.modifier_add(type='LATTICE')
 
         # Set lattice object in modifier as deformation cage.
-        ob = bpy.context.object
+        ob = context.object
         data = bpy.data
         ob.modifiers["Lattice"].object = data.objects[lattice_name]
         ob.modifiers["Lattice"].name = "Quick Lattice"
 
         # Set lattice as active, then set in edit mode.
-        bpy.context.view_layer.objects.active = data.objects[lattice_name]
+        context.view_layer.objects.active = data.objects[lattice_name]
         bpy.ops.object.editmode_toggle()        
         return{'FINISHED'}
 
