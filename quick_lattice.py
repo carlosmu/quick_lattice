@@ -17,7 +17,7 @@ bl_info = {
     "name" : "Quick Lattice",
     "author" : "carlosmu <carlos.damian.munoz@gmail.com>",    
     "blender" : (2, 83, 0),
-    "version" : (0, 4, 0),
+    "version" : (0, 5, 0),
     "category" : "User",
     "location" : "3D View > Object Right Click Context Menu",
     "description" : "Automate the process of modifying an object from a lattice cage.",
@@ -26,7 +26,6 @@ bl_info = {
     "tracker_url" : "",
 }
 
-# Operator class
 class QL_OT_quick_lattice(bpy.types.Operator):
     """Automates the process of warping an object in a lattice cage"""
     bl_idname = "ql.quick_lattice"
@@ -53,12 +52,13 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         min = 1, soft_min = 2, soft_max = 16,
     )
 
-    # Interpolation Types
+    # Interpolation Types (Tuple)
     interpolation_types = (('KEY_LINEAR', 'Linear', ''),
                             ('KEY_CARDINAL', 'Cardinal', ''),
                             ('KEY_CATMULL_ROM', 'Catmull-Rom', ''),
                             ('KEY_BSPLINE', 'BSpline', ''))
-
+    
+    # Interpolation Types Property
     interpolation_types : bpy.props.EnumProperty(
         name = "Interpolation",
         description = "Interpolation Type between dimension points",
@@ -74,62 +74,49 @@ class QL_OT_quick_lattice(bpy.types.Operator):
     
     # Quick Lattice functionality
     def execute(self, context): 
-        # Save Target, Name, Dimensions, Origin Location.
-        target_nam = context.active_object.name
-        target_dim = context.active_object.dimensions
-        target_rot = context.active_object.rotation_euler
-        target_loc = context.active_object.location
+        # Save target name
+        target = bpy.data.objects[context.active_object.name]
+
         # Save Location on 3d Cursor.
         context.scene.cursor.location = context.active_object.location
 
-        # Set origin to geometry
+        # Set origin to geometry (to find the geometry)
         bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
 
-        # Create Lattice object with the information previously collected. 
-        bpy.ops.object.add(type='LATTICE', enter_editmode=False, align='WORLD', location=target_loc, rotation=target_rot)
+        # Then create Lattice object with the information previously collected. 
+        bpy.ops.object.add(type='LATTICE', enter_editmode=False, align='WORLD', location=target.location, rotation=target.rotation_euler)
 
         # Save reference and name of lattice (current active object).
-        lattice = context.active_object
-        lattice_name = context.active_object.name
+        lattice = bpy.data.objects[context.active_object.name]
+        lattice.name = "Quick_Lattice"
 
-        # Adjust dimensions of lattice and set subdivisions.
-        lattice.dimensions = target_dim
-        data = context.object.data
-        data.points_u = self.resolution_u
-        data.points_v = self.resolution_v
-        data.points_w = self.resolution_w
+        # Adjust lattice dimensions, points and interpolation
+        lattice.dimensions = target.dimensions
+        lattice.data.points_u = self.resolution_u
+        lattice.data.points_v = self.resolution_v
+        lattice.data.points_w = self.resolution_w
+        lattice.data.interpolation_type_u = self.interpolation_types
+        lattice.data.interpolation_type_v = self.interpolation_types
+        lattice.data.interpolation_type_w = self.interpolation_types
 
-        data.interpolation_type_u = self.interpolation_types
-        data.interpolation_type_v = self.interpolation_types
-        data.interpolation_type_w = self.interpolation_types
-
-        # Return Origin to Initial Position
-        bpy.ops.object.select_all(action='DESELECT')
-        context.view_layer.objects.active = bpy.data.objects[target_nam]
-        context.view_layer.objects.active.select_set(True)
+        # Return Target to Initial Position
+        target.select_set(True)
         bpy.ops.object.origin_set(type='ORIGIN_CURSOR', center='MEDIAN')
-        bpy.ops.object.select_all(action='DESELECT')
+        target.select_set(False)
 
-        # Add lattice modifier to target.
-        context.view_layer.objects.active = bpy.data.objects[target_nam]
-        bpy.ops.object.modifier_add(type='LATTICE')
-
-        # Set lattice object in modifier as deformation cage.
-        ob = context.object
-        data = bpy.data
-        ob.modifiers["Lattice"].object = data.objects[lattice_name]
-        ob.modifiers["Lattice"].name = "Quick Lattice"
+        # Add lattice modifier and set the object
+        modifier = target.modifiers.new(name="Quick Lattice", type='LATTICE')
+        modifier.object = lattice
 
         # Set lattice as active, then set in edit mode.
-        context.view_layer.objects.active = data.objects[lattice_name]
+        lattice.select_set(True)
         bpy.ops.object.editmode_toggle()        
         return{'FINISHED'}
 
 # Draw buttons
 def draw_quicklattice_menu(self, context):
-    layout = self.layout 
-    # Menu elements only on selected objects
-    if context.selected_objects:
+    layout = self.layout     
+    if context.selected_objects: # Menu elements only on selected objects
         layout.operator("ql.quick_lattice", icon='LATTICE_DATA')  # Create Quick Lattice       
         layout.separator() # Separator    
 
