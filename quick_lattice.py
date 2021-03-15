@@ -26,6 +26,10 @@ bl_info = {
     "tracker_url" : "https://github.com/carlosmu/quick_lattice/issues",
 }
 
+##############################################
+### MAIN CLASS
+##############################################
+
 class QL_OT_quick_lattice(bpy.types.Operator):
     """Automates the process of warping an object in a lattice cage"""
     bl_idname = "ql.quick_lattice"
@@ -153,12 +157,30 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         col.prop(self, "interpolation_types")
 
 ##############################################
+### USER PREFERENCES
+##############################################
+
+class QLPreferences(bpy.types.AddonPreferences):
+    bl_idname = __name__
+
+    popup_dialog : bpy.props.BoolProperty(name="Popup Dialog", default=True)
+    
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self, "popup_dialog")
+
+
+##############################################
 ### DRAW BUTTONS
 ##############################################
 def draw_quicklattice_menu(self, context):
+    # For use the preferences option
+    popup_dialog = context.preferences.addons[__name__].preferences.popup_dialog
+
     layout = self.layout     
     if context.selected_objects: # Menu elements only on selected objects
-        layout.operator_context = "INVOKE_DEFAULT"
+        if popup_dialog == True: # If True show popup_dialog        
+            layout.operator_context = "INVOKE_DEFAULT"
         layout.operator("ql.quick_lattice", icon='LATTICE_DATA')  # Create Quick Lattice       
         layout.separator() # Separator    
 
@@ -167,8 +189,10 @@ def draw_quicklattice_menu(self, context):
 ##############################################
 def register():
     bpy.utils.register_class(QL_OT_quick_lattice)
+    bpy.utils.register_class(QLPreferences)
     bpy.types.VIEW3D_MT_object_context_menu.prepend(draw_quicklattice_menu) 
         
 def unregister():
     bpy.utils.unregister_class(QL_OT_quick_lattice)
+    bpy.utils.unregister_class(QLPreferences)
     bpy.types.VIEW3D_MT_object_context_menu.remove(draw_quicklattice_menu) 
