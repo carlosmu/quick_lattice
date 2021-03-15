@@ -23,7 +23,7 @@ bl_info = {
     "description" : "Automate the process of modifying an object from a lattice cage.",
     "warning" : "",
     "doc_url" : "https://github.com/carlosmu/quick_lattice",
-    "tracker_url" : "",
+    "tracker_url" : "https://github.com/carlosmu/quick_lattice/issues",
 }
 
 class QL_OT_quick_lattice(bpy.types.Operator):
@@ -32,21 +32,25 @@ class QL_OT_quick_lattice(bpy.types.Operator):
     bl_label = "Quick Lattice"  
     bl_options = {'REGISTER', 'UNDO'}
 
+    ##############################################
+    ### PROPERTIES
+    ##############################################
+
     # Resolution Properties
     resolution_u : bpy.props.IntProperty(
-        name = "Resolution U",
+        name = "Resolution U (X)",
         description = "Points in U direction (can't changed when there are shape keys)",
         default = 3,
         min = 1, soft_min = 2, soft_max = 16,
     )
     resolution_v : bpy.props.IntProperty(
-        name = "V",
+        name = "V (Y)",
         description = "Points in V direction (can't changed when there are shape keys)",
         default = 3,
         min = 1, soft_min = 2, soft_max = 16,
     )
     resolution_w : bpy.props.IntProperty(
-        name = "W",
+        name = "W (Z)",
         description = "Points in W direction (can't changed when there are shape keys)",
         default = 3,
         min = 1, soft_min = 2, soft_max = 16,
@@ -65,6 +69,13 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         items = interpolation_types,
         default = 'KEY_BSPLINE',
     )
+
+    # Outside Property
+    outside : bpy.props.BoolProperty(
+        name = "Outside",
+        description = "Only draw and use the outher vertices",
+        default = False,
+    )
  
     # It prevents the operator from appearing in unsupported editors.
     @classmethod
@@ -72,19 +83,27 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         if (context.area.ui_type == 'VIEW_3D'):
             return True
     
+    ##############################################
     # Quick Lattice functionality
+    ##############################################
     def execute(self, context): 
         # Save target name
         target = bpy.data.objects[context.active_object.name]
 
         # Save Location on 3d Cursor.
-        context.scene.cursor.location = context.active_object.location
+        context.scene.cursor.location = target.location
 
         # Set origin to geometry (to find the geometry)
         bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
 
         # Then create Lattice object with the information previously collected. 
-        bpy.ops.object.add(type='LATTICE', enter_editmode=False, align='WORLD', location=target.location, rotation=target.rotation_euler)
+        bpy.ops.object.add(
+                            type='LATTICE', 
+                            enter_editmode=False, 
+                            align='WORLD', 
+                            location=target.location, 
+                            rotation=target.rotation_euler
+                            )
 
         # Save reference and name of lattice (current active object).
         lattice = bpy.data.objects[context.active_object.name]
@@ -98,8 +117,10 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         lattice.data.interpolation_type_u = self.interpolation_types
         lattice.data.interpolation_type_v = self.interpolation_types
         lattice.data.interpolation_type_w = self.interpolation_types
+        lattice.data.use_outside = self.outside
 
         # Return Target to Initial Position
+        lattice.select_set(False)
         target.select_set(True)
         bpy.ops.object.origin_set(type='ORIGIN_CURSOR', center='MEDIAN')
         target.select_set(False)
@@ -110,17 +131,40 @@ class QL_OT_quick_lattice(bpy.types.Operator):
 
         # Set lattice as active, then set in edit mode.
         lattice.select_set(True)
-        bpy.ops.object.editmode_toggle()        
+        bpy.ops.object.editmode_toggle()    
         return{'FINISHED'}
 
-# Draw buttons
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
+    
+    def draw(self, context):
+        layout = self.layout
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+
+        col = layout.column(align=True)
+        col.prop(self, "resolution_u")
+        col.prop(self, "resolution_v")
+        col.prop(self, "resolution_w")
+
+        col = layout.column(align=False)              
+        col.prop(self, "outside")
+        col.prop(self, "interpolation_types")
+
+##############################################
+### DRAW BUTTONS
+##############################################
 def draw_quicklattice_menu(self, context):
     layout = self.layout     
     if context.selected_objects: # Menu elements only on selected objects
+        layout.operator_context = "INVOKE_DEFAULT"
         layout.operator("ql.quick_lattice", icon='LATTICE_DATA')  # Create Quick Lattice       
         layout.separator() # Separator    
 
-# Register/unregister the operator class and draw function
+##############################################
+### Register/unregister class and functions
+##############################################
 def register():
     bpy.utils.register_class(QL_OT_quick_lattice)
     bpy.types.VIEW3D_MT_object_context_menu.prepend(draw_quicklattice_menu) 

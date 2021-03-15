@@ -24,6 +24,8 @@ This will save you a few clicks and other settings. No more. <br>
 - 0.3.1 Fix: Crash On Undo, reported by BluePortal77 
 - 0.4.0 Add Last Operation Support
 <br><img src="demo/last_operation.jpg" width="350"><br>
+- 0.5.0 Add Popup Dialog
+<br><img src="demo/popup_dialog.jpg" width="350"><br>
 
 
 ## Donate
@@ -36,5 +38,5 @@ When the object's pivot is rotated (but not the whole object), the result may no
 <br><br>
 
 ## To-Do List
-- Add some options to "last action" panel (for example: number of points)
 - Add feature to set bones/empties to all points of lattice.
+- Multi Object option.
