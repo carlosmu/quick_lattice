@@ -1,6 +1,12 @@
 # Quick Lattice (Blender Addon) 
-Automates the process of warping an object in a lattice cage.  <br>
-This will save you a few clicks and other settings. No more. <br>
+Tired of setting up lattices?<br>
+Looking for a non-destructive way to modify your models?<br>
+Quick Lattice is what you are looking for! Do not wait more! (hahaha)<br>
+
+## What its does?
+Automating the process of warping an object in a lattice cage.<br>
+Setting the size, position, rotation, resolution, interpolation, modifier, etc.<br>
+This will save you a lot clicks and other boring settings. But not much more. <br>
 
 ## Usage
 1. Select the target object
@@ -24,9 +30,13 @@ This will save you a few clicks and other settings. No more. <br>
 - 0.3.1 Fix: Crash On Undo, reported by BluePortal77 
 - 0.4.0 Add Last Operation Support
 <br><img src="demo/last_operation.jpg" width="400" style="border-radius:5px"><br>
-- 0.5.0 Add Popup Dialog and add User Preferences option
+- 0.5.0 Add Popup Dialog and User Preferences option
 <br><img src="demo/popup_dialog.jpg" width="400" style="border-radius:5px"><br>
 <br><img src="demo/popup_user_prefs.jpg" width="400" style="border-radius:5px"><br>
+- 0.6.0 Add User Preferences to set the Default Resolution and Interpolation of Lattices
+<br><img src="demo/user_preferences_v06.jpg" width="400" style="border-radius:5px"><br>
+
+
 
 
 ## Donate
@@ -39,5 +49,5 @@ When the object's pivot is rotated (but not the whole object), the result may no
 <br><br>
 
 ## To-Do List
-- Add feature to set bones/empties to all points of lattice.
 - Multi Object option.
+- Add feature to set bones/empties to all points of lattice.

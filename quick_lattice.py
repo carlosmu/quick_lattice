@@ -12,6 +12,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import bpy
+from bpy.types import Operator, AddonPreferences
+from bpy.props import StringProperty, IntProperty, BoolProperty, EnumProperty
 
 bl_info = {
     "name" : "Quick Lattice",
@@ -35,10 +37,21 @@ bl_info = {
 class QLPreferences(bpy.types.AddonPreferences):
     bl_idname = __name__
 
-    popup_dialog : bpy.props.BoolProperty(name="Popup Dialog", default=True)
+    popup_dialog : bpy.props.BoolProperty(
+        name="Enable Popup Dialog on Creation",
+        description="Enable or Disable the Popup Dialog on creation of Quick Lattice", 
+        default=True
+        )
 
-    interp_types_prefs : bpy.props.EnumProperty(
-        name = "Interpolation",
+    default_resolution : bpy.props.IntProperty(
+        name="Default Lattice Resolution",
+        description="Default subdivisions of the Lattice Object", 
+        default= 3,
+        min = 1, soft_min = 2, soft_max = 32, max =256,
+        )
+
+    default_interpolation : bpy.props.EnumProperty(
+        name = "Default Lattice Interpolation",
         description = "Interpolation Type between dimension points",
         items = [
             ('KEY_LINEAR', 'Linear', ''),
@@ -47,13 +60,21 @@ class QLPreferences(bpy.types.AddonPreferences):
             ('KEY_BSPLINE', 'BSpline', '')
         ],
         default = 'KEY_BSPLINE'
-    )
+        )
     
     def draw(self, context):
-        layout = self.layout        
-        layout.prop(self, "popup_dialog")
-        layout.prop(self, "interp_types_prefs")
+        layout = self.layout
+        layout.use_property_split = True
+        layout.use_property_decorate = True
+        box = layout.box()
+        box.separator()
+        box.prop(self, "popup_dialog")
+        box.separator()
+        box.prop(self, "default_resolution")
+        box.prop(self, "default_interpolation")
+        box.separator()
 
+### Register preferences for use in properties
 bpy.utils.register_class(QLPreferences)
 
 ##############################################
@@ -74,20 +95,20 @@ class QL_OT_quick_lattice(bpy.types.Operator):
     resolution_u : bpy.props.IntProperty(
         name = "Resolution U (X)",
         description = "Points in U direction (can't changed when there are shape keys)",
-        default = 3,
-        min = 1, soft_min = 2, soft_max = 16,
+        default = bpy.context.preferences.addons[__name__].preferences.default_resolution,
+        min = 1, soft_min = 2, soft_max = 32, max =256, 
     )
     resolution_v : bpy.props.IntProperty(
         name = "V (Y)",
         description = "Points in V direction (can't changed when there are shape keys)",
-        default = 3,
-        min = 1, soft_min = 2, soft_max = 16,
+        default = bpy.context.preferences.addons[__name__].preferences.default_resolution,
+        min = 1, soft_min = 2, soft_max = 32, max =256, 
     )
     resolution_w : bpy.props.IntProperty(
         name = "W (Z)",
         description = "Points in W direction (can't changed when there are shape keys)",
-        default = 3,
-        min = 1, soft_min = 2, soft_max = 16,
+        default = bpy.context.preferences.addons[__name__].preferences.default_resolution,
+        min = 1, soft_min = 2, soft_max = 32, max =256, 
     )
 
     # Interpolation Types (Tuple)
@@ -101,7 +122,7 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         name = "Interpolation",
         description = "Interpolation Type between dimension points",
         items = interpolation_types,
-        default = bpy.context.preferences.addons[__name__].preferences.interp_types_prefs
+        default = bpy.context.preferences.addons[__name__].preferences.default_interpolation
     )
 
     # Outside Property
@@ -170,8 +191,8 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         return{'FINISHED'}
 
     def invoke(self, context, event):
-        wm = context.window_manager
-        return wm.invoke_props_dialog(self)
+        # wm = context.window_manager
+        return context.window_manager.invoke_props_dialog(self)
     
     def draw(self, context):
         layout = self.layout
@@ -187,10 +208,11 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         col.prop(self, "outside")
         col.prop(self, "interpolation_types")
 
-
+### Unregister Preferences for use in properties
+bpy.utils.unregister_class(QLPreferences)
 
 ##############################################
-### DRAW BUTTONS
+## DRAW BUTTONS
 ##############################################
 def draw_quicklattice_menu(self, context):
     # For use the preferences option
@@ -198,7 +220,7 @@ def draw_quicklattice_menu(self, context):
 
     layout = self.layout     
     if context.selected_objects: # Menu elements only on selected objects
-        if popup_dialog == True: # If True show popup_dialog        
+        if popup_dialog: # If True show popup_dialog        
             layout.operator_context = "INVOKE_DEFAULT"
         layout.operator("ql.quick_lattice", icon='LATTICE_DATA')  # Create Quick Lattice       
         layout.separator() # Separator    
@@ -206,14 +228,14 @@ def draw_quicklattice_menu(self, context):
 
 
 ##############################################
-### Register/unregister class and functions
+## Register/unregister class and functions
 ##############################################
 def register():
     bpy.utils.register_class(QL_OT_quick_lattice)
-    # bpy.utils.register_class(QLPreferences)
+    bpy.utils.register_class(QLPreferences)
     bpy.types.VIEW3D_MT_object_context_menu.prepend(draw_quicklattice_menu) 
         
 def unregister():
     bpy.utils.unregister_class(QL_OT_quick_lattice)
-    # bpy.utils.unregister_class(QLPreferences)
+    bpy.utils.unregister_class(QLPreferences)
     bpy.types.VIEW3D_MT_object_context_menu.remove(draw_quicklattice_menu) 
