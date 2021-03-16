@@ -21,8 +21,8 @@ bl_info = {
     "blender" : (2, 83, 0),
     "version" : (0, 6, 0),
     "category" : "User",
-    "location" : "3D View > Object Right Click Context Menu",
-    "description" : "Automate the process of modifying an object from a lattice cage.",
+    "location" : "3D View > Object Right-Click Context Menu",
+    "description" : "Automating the process of warping an object in a lattice cage.",
     "warning" : "",
     "doc_url" : "https://github.com/carlosmu/quick_lattice",
     "tracker_url" : "https://github.com/carlosmu/quick_lattice/issues",
@@ -31,7 +31,7 @@ bl_info = {
 
 
 ##############################################
-### USER PREFERENCES
+#    USER PREFERENCES 
 ##############################################
 
 class QLPreferences(bpy.types.AddonPreferences):
@@ -57,8 +57,7 @@ class QLPreferences(bpy.types.AddonPreferences):
             ('KEY_LINEAR', 'Linear', ''),
             ('KEY_CARDINAL', 'Cardinal', ''),
             ('KEY_CATMULL_ROM', 'Catmull-Rom', ''),
-            ('KEY_BSPLINE', 'BSpline', '')
-        ],
+            ('KEY_BSPLINE', 'BSpline', '')],
         default = 'KEY_BSPLINE'
         )
     
@@ -74,22 +73,19 @@ class QLPreferences(bpy.types.AddonPreferences):
         box.prop(self, "default_interpolation")
         box.separator()
 
+
 ### Register preferences for use in properties
 bpy.utils.register_class(QLPreferences)
 
 ##############################################
-### MAIN CLASS
+#   MAIN CLASS
 ##############################################
 
 class QL_OT_quick_lattice(bpy.types.Operator):
-    """Automates the process of warping an object in a lattice cage"""
+    """Automating the process of warping an object in a lattice cage."""
     bl_idname = "ql.quick_lattice"
     bl_label = "Quick Lattice"  
     bl_options = {'REGISTER', 'UNDO'}
-
-    ##############################################
-    ### PROPERTIES
-    ##############################################
 
     # Resolution Properties
     resolution_u : bpy.props.IntProperty(
@@ -111,17 +107,14 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         min = 1, soft_min = 2, soft_max = 32, max =256, 
     )
 
-    # Interpolation Types (Tuple)
-    interpolation_types = (('KEY_LINEAR', 'Linear', ''),
-                            ('KEY_CARDINAL', 'Cardinal', ''),
-                            ('KEY_CATMULL_ROM', 'Catmull-Rom', ''),
-                            ('KEY_BSPLINE', 'BSpline', ''))
-
     # Interpolation Types Property
     interpolation_types : bpy.props.EnumProperty(
         name = "Interpolation",
         description = "Interpolation Type between dimension points",
-        items = interpolation_types,
+        items = [('KEY_LINEAR', 'Linear', ''),
+                ('KEY_CARDINAL', 'Cardinal', ''),
+                ('KEY_CATMULL_ROM', 'Catmull-Rom', ''),
+                ('KEY_BSPLINE', 'BSpline', '')],
         default = bpy.context.preferences.addons[__name__].preferences.default_interpolation
     )
 
@@ -132,7 +125,7 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         default = False,
     )
  
-    # It prevents the operator from appearing in unsupported editors.
+    # Prevents operator appearing in unsupported editors
     @classmethod
     def poll(cls, context):
         if (context.area.ui_type == 'VIEW_3D'):
@@ -140,19 +133,19 @@ class QL_OT_quick_lattice(bpy.types.Operator):
     
 
     ##############################################
-    # Quick Lattice functionality
+    #   Quick Lattice functionality
     ##############################################
     def execute(self, context): 
         # Save target name
         target = bpy.data.objects[context.active_object.name]
 
-        # Save Location on 3d Cursor.
+        # Save Location on 3d Cursor
         context.scene.cursor.location = target.location
 
         # Set origin to geometry (to find the geometry)
         bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
 
-        # Then create Lattice object with the information previously collected. 
+        # Create Lattice object 
         bpy.ops.object.add(
                             type='LATTICE', 
                             enter_editmode=False, 
@@ -161,11 +154,11 @@ class QL_OT_quick_lattice(bpy.types.Operator):
                             rotation=target.rotation_euler
                             )
 
-        # Save reference and name of lattice (current active object).
+        # Save references of lattice (current active object)
         lattice = bpy.data.objects[context.active_object.name]
         lattice.name = "Quick_Lattice"
 
-        # Adjust lattice dimensions, points and interpolation
+        # Adjust lattice properties
         lattice.dimensions = target.dimensions
         lattice.data.points_u = self.resolution_u
         lattice.data.points_v = self.resolution_v
@@ -185,15 +178,17 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         modifier = target.modifiers.new(name="Quick Lattice", type='LATTICE')
         modifier.object = lattice
 
-        # Set lattice as active, then set in edit mode.
+        # Set lattice in edit mode.
         lattice.select_set(True)
-        bpy.ops.object.editmode_toggle()    
+        bpy.ops.object.editmode_toggle()  
+
         return{'FINISHED'}
 
+    # Popup
     def invoke(self, context, event):
-        # wm = context.window_manager
         return context.window_manager.invoke_props_dialog(self)
-    
+
+    # Custom draw
     def draw(self, context):
         layout = self.layout
         layout.use_property_split = True
@@ -208,14 +203,16 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         col.prop(self, "outside")
         col.prop(self, "interpolation_types")
 
-### Unregister Preferences for use in properties
+### Unregister Preferences for use in main functionality
 bpy.utils.unregister_class(QLPreferences)
 
+
+
 ##############################################
-## DRAW BUTTONS
+## DRAW MENU BUTTON
 ##############################################
 def draw_quicklattice_menu(self, context):
-    # For use the preferences option
+    # Popup user preference
     popup_dialog = context.preferences.addons[__name__].preferences.popup_dialog    
 
     layout = self.layout     
@@ -223,12 +220,12 @@ def draw_quicklattice_menu(self, context):
         if popup_dialog: # If True show popup_dialog        
             layout.operator_context = "INVOKE_DEFAULT"
         layout.operator("ql.quick_lattice", icon='LATTICE_DATA')  # Create Quick Lattice       
-        layout.separator() # Separator    
+        layout.separator()   
 
 
 
 ##############################################
-## Register/unregister class and functions
+## Register/unregister classes and functions
 ##############################################
 def register():
     bpy.utils.register_class(QL_OT_quick_lattice)
