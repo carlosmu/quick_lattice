@@ -69,8 +69,8 @@ class QLPreferences(bpy.types.AddonPreferences):
         box.separator()
         box.prop(self, "popup_dialog")
         box.separator()
-        box.prop(self, "default_resolution")
-        box.prop(self, "default_interpolation")
+        box.prop(self, "default_resolution", text="Default Resolution (Restart required)")
+        box.prop(self, "default_interpolation", text="Default Interpolation (Restart required)")
         box.separator()
 
 
