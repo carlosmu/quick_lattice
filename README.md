@@ -16,6 +16,10 @@ This will save you a lot clicks and other boring settings. But not much more. <b
 <br><br>
 <img src="demo/quick_lattice.gif" width="600" style="border-radius:5px">
 <br><br>
+## New features
+<br>
+<img src="demo/quick_lattice_v06.gif" width="600" style="border-radius:5px" alt="New Features">
+<br><br>
 
 ## Instalation
 1. Go to releases page: https://github.com/carlosmu/quick_lattice/releases/
