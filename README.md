@@ -53,5 +53,7 @@ When the object's pivot is rotated (but not the whole object), the result may no
 <br><br>
 
 ## To-Do List
+- Wrap on a zip package.
 - Multi Object option.
+- Vertex Selection or vGroups.
 - Add feature to set bones/empties to all points of lattice.
