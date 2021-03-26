@@ -22,12 +22,12 @@ This will save you a lot clicks and other boring settings. But not much more. <b
 <br><br>
 
 ## Instalation
-1. Go to releases page: https://github.com/carlosmu/quick_lattice/releases/
-2. Download the python file "quick_lattice.py"
-3. Go to Blender > User Preferences > Addons > Install 
-4. Select the previously downloaded file.
+1. Go to releases page: https://gumroad.com/l/quicklattice
+2. Download the zip file "quick_lattice_[version].zip"
+3. If you have an older version, uninstall it first (on addon preferences).
+4. Go to Blender > User Preferences > Addons > Install (choose the .zip file)
 5. Activate the addon.
-7. Enjoy it!
+6. Enjoy it!
 
 ## Changelog
 - 0.3.0 First Release!
@@ -39,8 +39,7 @@ This will save you a lot clicks and other boring settings. But not much more. <b
 <br><img src="demo/popup_user_prefs.jpg" width="400" style="border-radius:5px"><br>
 - 0.6.0 Add User Preferences to set the Default Resolution and Interpolation of Lattices
 <br><img src="demo/user_preferences_v06.jpg" width="400" style="border-radius:5px"><br>
-
-
+- 0.7.0 Now this addon use multifile structure (.zip)
 
 
 ## Donate
@@ -52,8 +51,14 @@ When the object's pivot is rotated (but not the whole object), the result may no
 <img src="demo/known_issues.jpg" width="600" style="border-radius:5px">
 <br><br>
 
-## To-Do List
-- Wrap on a zip package.
+## Report a Bug
+If you have any problem, report it on Addon Preferences. I will solve it as soon as possible. 
+
+<img src="demo/report_bug.jpg" width="600" style="border-radius:5px">
+<br><br>
+
+## To-Do List for 1.0 Milestone
+- Wrap on a zip package = OK
 - Multi Object option.
 - Vertex Selection or vGroups.
 - Add feature to set bones/empties to all points of lattice.
