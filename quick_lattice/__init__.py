@@ -20,8 +20,8 @@ bl_info = {
     "location" : "3D View > Object Right-Click Context Menu",
     "description" : "Automating the process of warping an object in a lattice cage.",
     "warning" : "",
-    "doc_url" : "https://gumroad.com/l/quicklattice",
-    "tracker_url" : "https://github.com/carlosmu/quick_lattice/issues",
+    "doc_url" : "https://blendermarket.com/products/quick-lattice",
+    "tracker_url" : "https://blendermarket.com/creators/carlosmu",
 }
 
 import bpy
