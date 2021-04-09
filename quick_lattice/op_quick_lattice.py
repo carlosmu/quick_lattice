@@ -67,6 +67,8 @@ class QL_OT_quick_lattice(bpy.types.Operator):
     #   Quick Lattice functionality
     ##############################################
     def execute(self, context): 
+        ql_props = bpy.context.preferences.addons[__package__].preferences
+
         # Save target name
         target = bpy.data.objects[context.active_object.name]
 
@@ -87,7 +89,12 @@ class QL_OT_quick_lattice(bpy.types.Operator):
 
         # Save references of lattice (current active object)
         lattice = bpy.data.objects[context.active_object.name]
-        lattice.name = "Quick_Lattice"
+        # Custom Names
+        if ql_props.custom_names:
+            if ql_props.name_prefix:
+                lattice.name = target.name + ql_props.name_separator + ql_props.lattice_object_name
+            else:
+                lattice.name = ql_props.lattice_object_name  
 
         # Adjust lattice properties
         lattice.dimensions = target.dimensions
@@ -106,12 +113,15 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         target.select_set(False)
 
         # Add lattice modifier and set the object
-        modifier = target.modifiers.new(name="Quick Lattice", type='LATTICE')
+        modifier = target.modifiers.new(name="Lattice", type='LATTICE') #name="Quick Lattice"
+        if ql_props.custom_names:
+            modifier.name = ql_props.lattice_modifier_name
         modifier.object = lattice
 
         # Set lattice in edit mode.
         lattice.select_set(True)
-        bpy.ops.object.editmode_toggle()  
+        if ql_props.enter_editmode:
+            bpy.ops.object.editmode_toggle()  
 
         return{'FINISHED'}
 
