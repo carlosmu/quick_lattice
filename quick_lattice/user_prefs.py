@@ -73,25 +73,16 @@ class QL_Preferences(bpy.types.AddonPreferences):
     )
     
     def draw(self, context):
-        layout = self.layout
-        layout.use_property_split = True
-        layout.use_property_decorate = True
-        box = layout.box()
-        box.separator()
-        box.prop(self, "enable_on_context")
-        box.prop(self, "popup_dialog")
-        box.prop(self, "enter_editmode")
-        # box.separator()
-        box.prop(self, "default_resolution", text="Default Resolution (Restart required)")
-        box.prop(self, "default_interpolation", text="Default Interpolation (Restart required)")
-        box.separator()
-
-        layout.use_property_split = False
+        layout = self.layout        
+        layout.prop(self, "enable_on_context")
+        layout.prop(self, "popup_dialog")
+        layout.prop(self, "enter_editmode")
         custom_names = context.preferences.addons[__package__].preferences.custom_names 
         name_prefix = context.preferences.addons[__package__].preferences.name_prefix 
+        layout.separator()
 
+        layout.label(text="Naming:")
         layout.prop(self, "custom_names")
-
         if custom_names:
             row = layout.row()            
             row.prop(self, "name_prefix")
@@ -99,6 +90,17 @@ class QL_Preferences(bpy.types.AddonPreferences):
                 row.prop(self, "name_separator")
             layout.prop(self, "lattice_object_name")
             layout.prop(self, "lattice_modifier_name")
+        layout.separator()
+
+        layout.use_property_split = True
+        layout.use_property_decorate = True
+        box = layout.box()
+        box.label(text="Defaults: (Blender restart required)")
+        box.prop(self, "default_resolution", text="Resolution")
+        box.prop(self, "default_interpolation", text="Interpolation")
+        box.separator()
+
+
 
 
 ####################################
