@@ -9,14 +9,19 @@ from bpy.props import StringProperty, IntProperty, BoolProperty, EnumProperty
 class QL_Preferences(bpy.types.AddonPreferences):
     bl_idname = __package__
 
+    enable_on_context : bpy.props.BoolProperty(
+        name="Button on Context Menu",
+        description="Enable or Disable Quick Lattice Button on Context Menu. For example, if you prefer a shortcut or pie menu", 
+        default=True
+    )
     popup_dialog : bpy.props.BoolProperty(
         name="Popup Dialog on lattice creation",
         description="Enable or Disable the Popup Dialog on creation of Quick Lattice", 
         default=True
     )
-    enable_on_context : bpy.props.BoolProperty(
-        name="Button on Context Menu",
-        description="Enable or Disable Quick Lattice Button on Context Menu. For example, if you prefer a shortcut or pie menu", 
+    enter_editmode : bpy.props.BoolProperty(
+        name="Enter Edit Mode",
+        description="Automatically enter to Edit-Mode after lattice creation", 
         default=True
     )
     custom_names : bpy.props.BoolProperty(
@@ -75,6 +80,7 @@ class QL_Preferences(bpy.types.AddonPreferences):
         box.separator()
         box.prop(self, "enable_on_context")
         box.prop(self, "popup_dialog")
+        box.prop(self, "enter_editmode")
         # box.separator()
         box.prop(self, "default_resolution", text="Default Resolution (Restart required)")
         box.prop(self, "default_interpolation", text="Default Interpolation (Restart required)")
