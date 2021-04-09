@@ -11,7 +11,7 @@ bpy.utils.register_class(QL_Preferences)
 ##############################################
 
 class QL_OT_quick_lattice(bpy.types.Operator):
-    """Automating the process of warping an object in a lattice cage."""
+    """Automate the process of warping an object in a lattice cage """
     bl_idname = "ql.quick_lattice"
     bl_label = "Quick Lattice"  
     bl_options = {'REGISTER', 'UNDO'}
@@ -59,8 +59,11 @@ class QL_OT_quick_lattice(bpy.types.Operator):
     # Prevents operator appearing in unsupported editors
     @classmethod
     def poll(cls, context):
-        if (context.area.ui_type == 'VIEW_3D'):
-            return True
+        if (context.area.ui_type == 'VIEW_3D') and context.selected_objects:
+            # Supported object types
+            if context.active_object.type in ['MESH','CURVE','SURFACE','FONT', 'LATTICE']:
+                return True 
+
     
 
     ##############################################
@@ -113,7 +116,7 @@ class QL_OT_quick_lattice(bpy.types.Operator):
         target.select_set(False)
 
         # Add lattice modifier and set the object
-        modifier = target.modifiers.new(name="Lattice", type='LATTICE') #name="Quick Lattice"
+        modifier = target.modifiers.new(name="Lattice", type='LATTICE')
         if ql_props.custom_names:
             modifier.name = ql_props.lattice_modifier_name
         modifier.object = lattice
