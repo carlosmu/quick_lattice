@@ -9,12 +9,12 @@ def draw_quicklattice_menu(self, context):
     enable_on_context = context.preferences.addons[__package__].preferences.enable_on_context 
 
     layout = self.layout     
-    if context.selected_objects: # Menu elements only on selected objects
-        if enable_on_context:
-            if popup_dialog: # If True show popup_dialog        
-                layout.operator_context = "INVOKE_DEFAULT"
-            layout.operator("ql.quick_lattice", icon='LATTICE_DATA')  # Create Quick Lattice       
-            layout.separator()   
+    # if context.selected_objects: # Menu elements only on selected objects
+    if enable_on_context:
+        if popup_dialog: # If True show popup_dialog        
+            layout.operator_context = "INVOKE_DEFAULT"
+        layout.operator("ql.quick_lattice", icon='LATTICE_DATA')  # Create Quick Lattice       
+        layout.separator()   
 
 
 ##############################################
