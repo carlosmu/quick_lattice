@@ -15,6 +15,7 @@ class QL_PT_quick_latice(bpy.types.Panel):
                 if not popup_dialog: # If True show popup_dialog        
                     layout.operator_context = "EXEC_DEFAULT"
                 layout.operator("ql.quick_lattice", icon='LATTICE_DATA')
+                layout.operator("ql.lattice_cleaner", icon='SHADERFX')
             else:
                 layout.label(text="Object Type not supported")
         else: 

@@ -15,7 +15,7 @@ bl_info = {
     "name" : "Quick Lattice",
     "author" : "carlosmu <carlos.damian.munoz@gmail.com>",    
     "blender" : (2, 83, 0),
-    "version" : (0, 8, 0),
+    "version" : (0, 9, 0),
     "category" : "User",
     "location" : "3D View > Object Right-Click Context Menu",
     "description" : "Automating the process of warping an object in a lattice cage.",
@@ -28,6 +28,7 @@ import bpy
 
 from . import draw_button
 from . import op_quick_lattice
+from . import op_lattice_cleaner
 from . import pt_quick_lattice
 from . import user_prefs
 
@@ -37,11 +38,13 @@ from . import user_prefs
 def register():
     draw_button.register()
     op_quick_lattice.register() 
+    op_lattice_cleaner.register() 
     pt_quick_lattice.register() 
     user_prefs.register()   
         
 def unregister():
     draw_button.unregister()
     op_quick_lattice.unregister() 
+    op_lattice_cleaner.unregister() 
     pt_quick_lattice.unregister() 
-    user_prefs.unregister() 
+    user_prefs.unregister()

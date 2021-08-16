@@ -15,8 +15,8 @@ class QL_Preferences(bpy.types.AddonPreferences):
         default=True
     )
     popup_dialog : bpy.props.BoolProperty(
-        name="Popup Dialog on lattice creation",
-        description="Enable or Disable the Popup Dialog on creation of Quick Lattice", 
+        name="Popup Dialogs on Operators",
+        description="Enable or disable the Popup Dialogs when calling addon operators", 
         default=True
     )
     enter_editmode : bpy.props.BoolProperty(

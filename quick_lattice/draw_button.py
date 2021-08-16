@@ -13,7 +13,8 @@ def draw_quicklattice_menu(self, context):
     if enable_on_context:
         if popup_dialog: # If True show popup_dialog        
             layout.operator_context = "INVOKE_DEFAULT"
-        layout.operator("ql.quick_lattice", icon='LATTICE_DATA')  # Create Quick Lattice       
+        layout.operator("ql.quick_lattice", icon='LATTICE_DATA')       
+        layout.operator("ql.lattice_cleaner", icon='SHADERFX')          
         layout.separator()   
 
 
