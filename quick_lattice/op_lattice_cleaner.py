@@ -16,7 +16,7 @@ class QL_OT_lattice_cleaner(bpy.types.Operator):
         default = True
     )
     remove_mod : bpy.props.BoolProperty(
-        name = "Remove Lattice Modifiers not in use",
+        name = "Remove Unused Lattice Modifiers",
         description = "If a lattice modifier does not have an lattice object, it will be removed",
         default = True
     )
