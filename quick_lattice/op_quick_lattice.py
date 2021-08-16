@@ -46,7 +46,7 @@ class QL_OT_quick_lattice(bpy.types.Operator):
                 ('KEY_CARDINAL', 'Cardinal', ''),
                 ('KEY_CATMULL_ROM', 'Catmull-Rom', ''),
                 ('KEY_BSPLINE', 'BSpline', '')],
-        default = bpy.context.preferences.addons[__package__].preferences.default_interpolation
+        default = ql_props.default_interpolation
     )
 
     # Outside Property

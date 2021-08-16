@@ -30,8 +30,7 @@ class QL_OT_lattice_cleaner(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         if (context.area.ui_type == 'VIEW_3D') and context.selected_objects:
-            if context.active_object.type in ['MESH','CURVE','SURFACE','FONT', 'LATTICE']:
-                return True 
+            return True 
 
     ##############################################
     #   Main functionality
