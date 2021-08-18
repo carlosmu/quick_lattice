@@ -12,14 +12,18 @@ class QL_PT_quick_latice(bpy.types.Panel):
         popup_dialog = context.preferences.addons[__package__].preferences.popup_dialog
         if context.selected_objects:
             if context.active_object.type in ['MESH','CURVE','SURFACE','FONT', 'LATTICE']:
-                if not popup_dialog: # If True show popup_dialog        
-                    layout.operator_context = "EXEC_DEFAULT"
-                layout.operator("ql.quick_lattice", icon='LATTICE_DATA')
-                layout.operator("ql.lattice_cleaner", icon='SHADERFX')
+                if context.object.mode == 'OBJECT':
+                    if not popup_dialog: # If True show popup_dialog        
+                        layout.operator_context = "EXEC_DEFAULT"
+                    layout.operator("ql.quick_lattice", icon='LATTICE_DATA')
+                    layout.operator("ql.lattice_cleaner", icon='SHADERFX')
+                else:
+                    
+                    layout.label(text="Buttons only in Object Mode", icon="INFO")
             else:
                 layout.label(text="Object Type not supported")
         else: 
-            layout.label(text="Please select an object")
+            layout.label(text="No objects selected", icon="INFO")
 
 
 
