@@ -43,7 +43,7 @@ This will save you a lot clicks and other boring settings. But not much more. <b
 
 
 ## Donate
-You can support my work by buying this plugin on Gumroad https://gum.co/quicklattice
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KJMPUHC8TJRE4)
 
 ## Known Issues
 When the object's pivot is rotated (but not the whole object), the result may not be what you want. In those cases, try applying the rotation first (Ctrl + A).
