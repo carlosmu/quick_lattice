@@ -7,10 +7,10 @@ This will save you a lot clicks and other boring settings. But not much more. <b
 ## To support the development of this and other addons, you can:
 
 Buy on Blendermarket:
-https://blendermarket.com/products/playblast/
+https://blendermarket.com/products/quick-lattice/
 
 or Buy on Gumroad:
-https://carlosmu.gumroad.com/l/playblast
+https://carlosmu.gumroad.com/l/quicklattice
 
 or Donate with Paypal:
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KJMPUHC8TJRE4)
