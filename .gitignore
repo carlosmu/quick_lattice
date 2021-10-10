@@ -2,5 +2,9 @@
 /__pycache__/
 *.pyc
 
+*.png~
+*.jpg~
+*.jpeg~
+
 # Exclude .zip tests
 *.zip
